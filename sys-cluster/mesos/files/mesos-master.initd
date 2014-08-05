@@ -1,0 +1,25 @@
+#!/sbin/runscript
+# Copyright 1999-2014 Gentoo Foundation
+# Distributed under the terms of the GNU General Public License v2
+# $Header: $
+
+depend() {
+	need net
+	use logger dns zookeeper
+}
+
+start() {
+	ebegin "Starting Mesos Master"
+	start-stop-daemon --background --make-pidfile \
+		--pidfile /var/run/mesos-master.pid \
+		--start --exec /usr/sbin/mesos-init-wrapper -- master
+	eend $?
+}
+
+stop() {
+	ebegin "Stopping Mesos Master"
+	start-stop-daemon \
+		--pidfile /var/run/mesos-master.pid \
+		--stop --exec /usr/sbin/mesos-init-wrapper
+	eend $?
+}
