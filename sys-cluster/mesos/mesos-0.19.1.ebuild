@@ -15,6 +15,7 @@ SLOT="0"
 
 DEPEND="net-misc/curl
 	dev-libs/cyrus-sasl
+	>=dev-libs/protobuf-2.5.0[python]
 	python? ( dev-lang/python dev-python/boto )
 	java? ( virtual/jdk dev-java/maven-bin )"
 
