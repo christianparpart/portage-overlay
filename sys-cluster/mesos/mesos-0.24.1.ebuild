@@ -1,4 +1,4 @@
-# Copyright 1999-2014 Gentoo Foundation
+# Copyright 1999-2015 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 # $Header: $
 
@@ -9,12 +9,13 @@ HOMEPAGE="http://mesos.apache.org/"
 SRC_URI="mirror://apache/mesos/${PV}/${P}.tar.gz"
 
 LICENSE="Apache-2.0"
-KEYWORDS="amd64"
+KEYWORDS="~amd64"
 IUSE="+java +python"
 SLOT="0"
 
 DEPEND="net-misc/curl
 	dev-libs/cyrus-sasl
+	>=dev-libs/protobuf-2.5.0[python]
 	python? ( dev-lang/python dev-python/boto )
 	java? ( virtual/jdk dev-java/maven-bin )"
 
