@@ -9,17 +9,18 @@ inherit autotools eutils flag-o-matic multilib
 DESCRIPTION="Large Scale Data Center Cluster Resource Manager"
 HOMEPAGE="http://mesos.apache.org/"
 
-SRC_URI="http://apache.org/dist/${PN}/${PV}/${P}.tar.gz"
+SRC_URI="http://apache.org/dist/${PN}/${PV%_*}/${P%_*}.tar.gz"
 
 LICENSE="Apache-2.0"
 KEYWORDS="~amd64"
-IUSE="java python"
+IUSE="ssl java python"
 SLOT="0"
 
 DEPEND="net-misc/curl
         dev-libs/cyrus-sasl
         python? ( dev-lang/python dev-python/boto )
         java? ( virtual/jdk )
+		>=dev-libs/libnl-3.2.27:3
         dev-java/maven-bin
         dev-libs/hyperleveldb
         dev-python/pip
@@ -28,8 +29,10 @@ DEPEND="net-misc/curl
 
 RDEPEND="python? ( dev-lang/python )
          >=virtual/jdk-1.6
+		 sys-process/supervisor
          ${DEPEND}"
 
+S="${WORKDIR}/${PN}-${PV%_*}"
 ECONF_SOURCE="${S}"
 
 src_prepare() {
@@ -39,12 +42,15 @@ src_prepare() {
 src_configure() {
   cd "${S}/build"
   econf $(use_enable python) \
-        $(use_enable java)
+        $(use_enable java) \
+		$(use_enable ssl) \
+		$(use_enable ssl libevent) \
+		--with-network-isolator
 }
 
 src_compile() {
   cd "${S}/build"
-  emake V=1 -j1
+  emake V=1 #-j1
 }
 
 src_install() {

@@ -9,24 +9,24 @@ depend() {
 }
 
 start() {
-  ebegin "Starting Mesos Slave"
+  ebegin "Starting Mesos Agent"
   start-stop-daemon --background --make-pidfile \
-    --pidfile /var/run/mesos-slave.pid \
-    --stdout /var/log/mesos-slave.log \
-    --stderr /var/log/mesos-slave.log \
+    --pidfile /var/run/mesos-agent.pid \
+    --stdout /var/log/mesos-agent.log \
+    --stderr /var/log/mesos-agent.log \
     --start --exec /usr/local/bin/supervisor -- \
-        --pidfile /var/run/mesos-slave-via-supervisor.pid \
+        --pidfile /var/run/mesos-agent-via-supervisor.pid \
         --restart-on-crash \
         --restart-on-error \
         --delay-limit=10 \
-        -- /usr/sbin/mesos-init-wrapper slave
+        -- /usr/sbin/mesos-init-wrapper agent
   eend $?
 }
 
 stop() {
-  ebegin "Stopping Mesos Slave"
+  ebegin "Stopping Mesos Agent"
   start-stop-daemon \
-    --pidfile /var/run/mesos-slave.pid \
+    --pidfile /var/run/mesos-agent.pid \
     --stop --exec /usr/local/bin/supervisor
   eend $?
 }

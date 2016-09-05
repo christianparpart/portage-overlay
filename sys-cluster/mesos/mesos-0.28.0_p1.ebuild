@@ -9,7 +9,7 @@ inherit autotools eutils flag-o-matic multilib
 DESCRIPTION="Large Scale Data Center Cluster Resource Manager"
 HOMEPAGE="http://mesos.apache.org/"
 
-SRC_URI="http://apache.org/dist/${PN}/${PV}/${P%_*}.tar.gz"
+SRC_URI="http://apache.org/dist/${PN}/${PV%_*}/${P%_*}.tar.gz"
 
 LICENSE="Apache-2.0"
 KEYWORDS="~amd64"
