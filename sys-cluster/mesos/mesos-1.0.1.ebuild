@@ -17,18 +17,21 @@ IUSE="ssl java python"
 SLOT="0"
 
 DEPEND="net-misc/curl
-        dev-libs/cyrus-sasl
-        python? ( dev-lang/python dev-python/boto )
-        java? ( virtual/jdk )
+		dev-libs/cyrus-sasl
+		python? ( dev-lang/python dev-python/boto )
+		java? ( virtual/jdk )
 		>=dev-libs/libnl-3.2.27:3
-        dev-java/maven-bin
-        dev-libs/hyperleveldb
-        dev-python/pip
-        dev-python/wheel
-        dev-vcs/subversion"
+		dev-java/maven-bin
+		dev-libs/hyperleveldb
+		dev-python/pip
+		dev-python/wheel
+		dev-vcs/subversion"
 
-RDEPEND="python? ( dev-lang/python )
-         >=virtual/jdk-1.6
+RDEPEND="python? ( dev-lang/python
+				   dev-python/boto
+				   dev-python/setuptools 
+				   dev-python/protobuf-python )
+		 >=virtual/jdk-1.6
 		 sys-process/supervisor
          ${DEPEND}"
 
@@ -56,16 +59,19 @@ src_compile() {
 src_install() {
   cd "${S}/build"
   emake DESTDIR="${D}" install || die "emake install failed"
+  rm -rf ${D}/usr/bin/easy_install \
+		 ${D}/usr/lib64/python2.7/site-packages/easy_install.py \
+		 ${D}/usr/lib64/python2.7/site-packages/setuptools/
 
   keepdir /var/lib/mesos
   keepdir /var/log/mesos
   keepdir /var/run/mesos
 
   keepdir /etc/mesos
-  keepdir /etc/mesos-agent
+  keepdir /etc/mesos-slave
   keepdir /etc/mesos-master
   newinitd ${FILESDIR}/mesos-master.initd mesos-master
-  newinitd ${FILESDIR}/mesos-agent.initd mesos-agent
+  newinitd ${FILESDIR}/mesos-slave.initd mesos-slave
 
   #dosbin ${FILESDIR}/mesos-init-wrapper
   cp ${FILESDIR}/mesos-init-wrapper ${D}/usr/sbin/
