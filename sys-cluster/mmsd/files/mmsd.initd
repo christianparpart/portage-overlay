@@ -1,0 +1,53 @@
+#!/sbin/runscript
+# vim:syntax=gentoo-init-d
+# Copyright 1999-2014 Gentoo Foundation
+# Distributed under the terms of the GNU General Public License v2
+# $Header: $
+
+depend() {
+  need net
+  before mysql-slave 
+}
+
+SVCNAME="mmsd"
+
+MMSD_SCRIPT="/usr/bin/mmsd.rb"
+MMSD_BIN="/usr/bin/mmsd"
+
+start() {
+  [ -f /etc/default/${SVCNAME} ] && . /etc/default/${SVCNAME}
+
+  mkdir -p ${RUN_STATE_DIR}
+
+  opts=""
+  opts="$opts --run-state-dir=${RUN_STATE_DIR}"
+  opts="$opts --marathon-ip=${MARATHON_IP}"
+  opts="$opts --marathon-port=${MARATHON_PORT}"
+  opts="$opts --filter-groups=${LB_FILTER}"
+  opts="$opts --enable-tcp"
+  opts="$opts --haproxy-bin=${HAPROXY_BIN}"
+  opts="$opts --haproxy-cfgtail=${HAPROXY_CFGTAIL}"
+  opts="$opts --haproxy-bind=${HAPROXY_BIND}"
+  opts="$opts --haproxy-port=${HAPROXY_PORT}"
+  opts="$opts --managed-ip=${MANAGED_IP}"
+  opts="$opts ${EXTRA_ARGS}"
+
+  ebegin "Starting ${SVCNAME}"
+  start-stop-daemon \
+    --start /usr/sbin/supervisor \
+    --make-pidfile --pidfile /run/${SVCNAME}-bin.pid \
+    --background \
+    --stdout /var/log/${SVCNAME}.log \
+    --stderr /var/log/${SVCNAME}.log \
+    -- ${MMSD_BIN} \
+		--restart-on-crash \
+		--restart-on-error \
+		-- $opts
+  eend $?
+}
+
+stop() {
+  ebegin "Stopping ${SVCNAME}"
+  start-stop-daemon --stop ${MMSD_BIN} --pidfile /run/${SVCNAME}-bin.pid
+  eend $?
+}

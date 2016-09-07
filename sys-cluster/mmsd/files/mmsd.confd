@@ -1,0 +1,14 @@
+# vim:syntax=sh
+#
+MARATHON_IP="10.10.42.24"
+MARATHON_PORT="1080"
+
+LB_FILTER="*"
+MANAGED_IP="1.1.1.1"
+RUN_STATE_DIR="/var/run/mmsd"
+
+HAPROXY_BIN="/usr/bin/haproxy"
+HAPROXY_CFGTAIL="/etc/mmsd/haproxy-tail.cfg"
+HAPROXY_PIDFILE="${RUN_STATE_DIR}/mmsd-haproxy.pid"
+HAPROXY_BIND="0.0.0.0"
+HAPROXY_PORT="8899"
